@@ -1,9 +1,10 @@
-const CACHE_NAME = "gita-pwa-v1";
+const CACHE_NAME = "gita-pwa-v2";
 
 const FILES_TO_CACHE = [
-  "/",
-  "/index.html",
-  "/manifest.json"
+  "./",
+  "./index.html",
+  "./manifest.json",
+  "./icons/icon.png"
 ];
 
 // Install
@@ -32,8 +33,15 @@ self.addEventListener("activate", event => {
   self.clients.claim();
 });
 
-// Fetch
+// Fetch (Navigation Safe Fallback)
 self.addEventListener("fetch", event => {
+  if (event.request.mode === "navigate") {
+    event.respondWith(
+      fetch(event.request).catch(() => caches.match("./index.html"))
+    );
+    return;
+  }
+
   event.respondWith(
     caches.match(event.request).then(response => {
       return response || fetch(event.request);
