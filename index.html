@@ -3,6 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#d35400">
+    <link rel="apple-touch-icon" href="icons/icon.png">
+
+    <link rel="icon" type="icon/png" sizes="32x32" href="icon.png">
+    <link rel="icon" type="icon/png" sizes="16x16" href="icon.png">
+
     <title>ଶ୍ରୀମଦ୍ଭଗବଦ୍‌ଗୀତା</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+Oriya:wght@400..700&display=swap');
@@ -129,6 +137,25 @@
     <div class="tab-item active" id="tab-home" onclick="switchTab('home')"><div>🏠</div><div>ଅଧ୍ୟାୟ</div></div>
     <div class="tab-item" id="tab-book" onclick="switchTab('bookmark')"><div>🔖</div><div>ବୁକ୍‌ମାର୍କ</div></div>
 </nav>
+
+<button id="install-btn" style="display:none;">⬇ Install</button>
+<script>
+    let deferredPrompt;
+
+    window.addEventListener("beforeinstallprompt", (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      document.getElementById("install-btn").style.display = "block";
+    });
+
+    document.getElementById("install-btn").addEventListener("click", () => {
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then(() => {
+        deferredPrompt = null;
+        document.getElementById("install-btn").style.display = "none";
+      });
+    });
+</script>
 
 <script>
     const gitaData = [
@@ -338,7 +365,11 @@
         div.className = 'sloka-box';
         div.innerHTML = `
             <div class="action-icons">
-                <span class="icon-btn share-icon" onclick="shareWhatsApp('${s.id}', \`${s.snk}\`, \`${s.odia}\`, '${chTitle}')">📤</span>
+                <span class="icon-btn share-icon" onclick="shareWhatsApp('${s.id}', \`${s.snk}\`, \`${s.odia}\`, '${chTitle}')">
+    <svg width="22" height="22" viewBox="0 0 32 32" fill="#25D366">
+        <path d="M16.04 2.003C8.83 2.003 2.99 7.844 2.99 15.054c0 2.66.78 5.14 2.13 7.22L2 30l7.95-2.08c2.01 1.1 4.3 1.72 6.59 1.72 7.21 0 13.05-5.84 13.05-13.05 0-7.21-5.84-13.05-13.05-13.05zm0 23.94c-2.11 0-4.16-.57-5.95-1.65l-.42-.25-4.72 1.23 1.26-4.6-.27-.44c-1.16-1.86-1.77-4-1.77-6.17 0-6.6 5.37-11.97 11.97-11.97s11.97 5.37 11.97 11.97-5.37 11.97-11.97 11.97zm6.56-8.89c-.36-.18-2.13-1.05-2.46-1.17-.33-.12-.57-.18-.81.18-.24.36-.93 1.17-1.14 1.41-.21.24-.42.27-.78.09-.36-.18-1.52-.56-2.89-1.78-1.07-.95-1.8-2.12-2.01-2.48-.21-.36-.02-.55.16-.73.16-.16.36-.42.54-.63.18-.21.24-.36.36-.6.12-.24.06-.45-.03-.63-.09-.18-.81-1.95-1.11-2.67-.29-.7-.59-.61-.81-.62l-.69-.01c-.24 0-.63.09-.96.45-.33.36-1.26 1.23-1.26 3 0 1.77 1.29 3.48 1.47 3.72.18.24 2.54 3.87 6.16 5.43.86.37 1.53.59 2.05.75.86.27 1.64.23 2.26.14.69-.1 2.13-.87 2.43-1.71.3-.84.3-1.56.21-1.71-.09-.15-.33-.24-.69-.42z"/>
+    </svg>
+</span>
                 <span class="icon-btn bookmark-icon ${isBookmarked ? 'active' : ''}" onclick="toggleBookmark('${s.id}', this)">❤</span>
             </div>
             <small>ଶ୍ଳୋକ ${s.id}</small>
@@ -349,8 +380,24 @@
     }
 
     function shareWhatsApp(id, snk, odia, chTitle) {
-        const text = `*ଶ୍ରୀମଦ୍ଭଗବଦ୍‌ଗୀତା*\n_${chTitle}_\n\n*ଶ୍ଳୋକ ${id}*\n${snk}\n\n*ଅର୍ଥ:*\n${odia}\n\n🙏 ଜୟ ଶ୍ରୀକୃଷ୍ଣ`;
-        window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+        const appLink = "https://sandeepwebsite.github.io/odia-bhagavad-gita/"; // 🔁 CHANGE THIS TO YOUR REAL URL
+
+        const text = `📖 *ଶ୍ରୀମଦ୍ଭଗବଦ୍‌ଗୀତା*
+
+        _${chTitle}_
+
+        *ଶ୍ଳୋକ ${id}*
+        ${snk.replace(/<br>/g, '\n')}
+
+        *ଅର୍ଥ:*
+        ${odia}
+
+        🌐 ପୁରା ପଢନ୍ତୁ:
+        ${appLink}
+
+        🙏 ଜୟ ଶ୍ରୀକୃଷ୍ଣ`;
+
+            window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
     }
 
     function toggleBookmark(id, el) {
@@ -398,6 +445,15 @@
                 if(found) container.appendChild(createSlokaElement(found, ch.title));
             });
         });
+    }
+
+
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("/sw.js")
+          .then(reg => console.log("✅ Service Worker Registered"))
+          .catch(err => console.log("❌ SW Error:", err));
+      });
     }
 
     function goHome() { switchTab('home'); }
