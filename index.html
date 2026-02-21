@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="or">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ଶ୍ରୀମଦ୍ଭଗବଦ୍‌ଗୀତା</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+Oriya:wght@400..700&display=swap');
+        :root {
+            --primary: #d35400; 
+            --secondary: #f39c12;
+            --bg-gradient: linear-gradient(180deg, #fff5e6 0%, #ffffff 100%);
+            --text: #2c3e50;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Noto Serif Oriya", serif;
+            font-optical-sizing: auto;
+            font-weight: 500;
+            font-style: normal;
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            color: var(--text);
+            min-height: 100vh;
+            padding-bottom: 75px;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0.04; z-index: -1;
+            background-image: url("https://www.transparenttextures.com/patterns/az-subtle.png");
+        }
+
+        header {
+            background: var(--primary);
+            color: white;
+            padding: 15px;
+            position: sticky;
+            top: 0;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 1000;
+        }
+
+        #back-btn { background: none; border: none; color: white; font-size: 24px; margin-right: 15px; cursor: pointer; display: none; }
+        header h1 { font-size: 1.1rem; margin: 0; flex-grow: 1; }
+        .header-icons button { background: rgba(255,255,255,0.2); border: none; border-radius: 50%; padding: 8px; color: white; cursor: pointer; }
+
+        .container { padding: 15px; max-width: 600px; margin: 0 auto; }
+
+        .stats-bar {
+            background: rgba(211, 84, 0, 0.1);
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 15px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            color: var(--primary);
+        }
+
+        .chapter-card {
+            background: white;
+            margin-bottom: 12px;
+            padding: 18px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 6px solid var(--secondary);
+            transition: 0.2s;
+        }
+        .chapter-card:active { transform: scale(0.97); }
+        .chapter-info h3 { margin: 0; font-size: 1rem; color: var(--primary); }
+        .chapter-info p { margin: 4px 0 0 0; font-size: 0.85rem; opacity: 0.8; }
+        .sloka-count-tag { background: #eee; padding: 4px 8px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; }
+
+        .sloka-box {
+            background: white; padding: 25px; border-radius: 20px; margin-bottom: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05); position: relative; border: 1px solid #ffe0b2;
+        }
+        .sanskrit { display: block; font-weight: bold; color: #8e44ad; margin-bottom: 15px; font-size: 1.1rem; text-align: center; line-height: 1.6; }
+        .odia-meaning { display: block; color: #2c3e50; font-size: 1rem; border-top: 1px dashed #f39c12; padding-top: 15px; line-height: 1.6; text-align: justify; }
+
+        .action-icons { position: absolute; top: 12px; right: 15px; display: flex; gap: 18px; }
+        .icon-btn { font-size: 1.3rem; cursor: pointer; color: #ccc; }
+        .bookmark-icon.active { color: #e74c3c; }
+        .share-icon { color: #27ae60; }
+
+        .tab-bar { position: fixed; bottom: 0; width: 100%; background: white; display: flex; border-top: 1px solid #eee; box-shadow: 0 -4px 10px rgba(0,0,0,0.05); z-index: 1001; }
+        .tab-item { flex: 1; text-align: center; padding: 12px 0; font-size: 0.85rem; color: #7f8c8d; cursor: pointer; }
+        .tab-item.active { color: var(--primary); font-weight: bold; border-top: 3px solid var(--primary); }
+
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+<header>
+    <button id="back-btn" onclick="goHome()">←</button>
+    <h1 id="header-title">ଶ୍ରୀମଦ୍ଭଗବଦ୍‌ଗୀତା</h1>
+    <div class="header-icons">
+        <button id="mute-toggle" onclick="toggleMute()">🔊</button>
+    </div>
+</header>
+
+<div class="container">
+    <div id="home-view">
+        <div class="stats-bar">ସମୁଦାୟ ଅଧ୍ୟାୟ: ୧୮ | ସମୁଦାୟ ଶ୍ଳୋକ: ୭୦୦</div>
+        <div id="chapter-list"></div>
+    </div>
+
+    <div id="bookmark-view" class="hidden">
+        <h2 style="text-align:center; color: var(--primary);">ମୋର ପସନ୍ଦିତ</h2>
+        <div id="bookmark-list"></div>
+    </div>
+
+    <div id="detail-view" class="hidden">
+        <div id="sloka-list"></div>
+    </div>
+</div>
+
+<nav class="tab-bar">
+    <div class="tab-item active" id="tab-home" onclick="switchTab('home')"><div>🏠</div><div>ଅଧ୍ୟାୟ</div></div>
+    <div class="tab-item" id="tab-book" onclick="switchTab('bookmark')"><div>🔖</div><div>ବୁକ୍‌ମାର୍କ</div></div>
+</nav>
+
+<script>
+    const gitaData = [
+        { id: 1, title: "ଅର୍ଜୁନ ବିଷାଦ ଯୋଗ", count: 47, slokas: [
+            {id:"1.1", snk:"ଧୃତରାଷ୍ଟ୍ର ଉବାଚ<br>ଧର୍ମକ୍ଷେତ୍ରେ କୁରୁକ୍ଷେତ୍ରେ ସମବେତା ଯୁଯୁତ୍ସବଃ ।<br>ମାମକାଃ ପାଣ୍ଡବାଶ୍ଚୈବ କିମକୁର୍ବତ ସଞ୍ଜୟ ।।୧।।",
+            odia:"ଧୃତରାଷ୍ଟ୍ର କହିଲେ: ହେ ସଞ୍ଜୟ! ଧର୍ମକ୍ଷେତ୍ର କୁରୁକ୍ଷେତ୍ରରେ ଯୁଦ୍ଧକୁ ଇଚ୍ଛା କରି ମୋ ପୁତ୍ରମାନେ ଓ ପାଣ୍ଡବମାନେ ଏକତ୍ରିତ ହୋଇ କ’ଣ କଲେ?"},
+
+            {id:"1.2", snk:"ସଞ୍ଜୟ ଉବାଚ<br>ଦୃଷ୍ଟ୍ୱା ତୁ ପାଣ୍ଡବାନୀକଂ ବ୍ୟୁଢଂ ଦୁର୍ଯୋଧନସ୍ତଦା ।<br>ଆଚାର୍ଯ୍ୟମୁପସଙ୍ଗମ୍ୟ ରାଜା ବଚନମବ୍ରବୀତ୍ ।।୨।।",
+            odia:"ସଞ୍ଜୟ କହିଲେ: ପାଣ୍ଡବମାନଙ୍କ ସଜ୍ଜିତ ସେନାକୁ ଦେଖି ରାଜା ଦୁର୍ଯୋଧନ ଗୁରୁ ଦ୍ରୋଣାଚାର୍ଯ୍ୟଙ୍କ ନିକଟକୁ ଯାଇ ଏମିତି କହିଲେ ।"},
+
+            {id:"1.3", snk:"ପଶ୍ୟୈତାଂ ପାଣ୍ଡୁପୁତ୍ରାଣାମାଚାର୍ଯ୍ୟ ମହତୀଂ ଚମୂମ୍ ।<br>ବ୍ୟୁଢାଂ ଦ୍ରୁପଦପୁତ୍ରେଣ ତବ ଶିଷ୍ୟେଣ ଧୀମତା ।।୩।।",
+            odia:"ହେ ଆଚାର୍ଯ୍ୟ! ଆପଣଙ୍କ ବୁଦ୍ଧିମାନ ଶିଷ୍ୟ ଦ୍ରୁପଦପୁତ୍ରଙ୍କ ଦ୍ୱାରା ସଜ୍ଜିତ ପାଣ୍ଡୁପୁତ୍ରମାନଙ୍କ ଏହି ବଡ଼ ସେନାକୁ ଦେଖନ୍ତୁ ।"},
+
+            {id:"1.4", snk:"ଅତ୍ର ଶୂରା ମହେଷ୍ୱାସା ଭୀମାର୍ଜୁନସମା ଯୁଧି ।<br>ଯୁୟୁଧାନୋ ବିରାଟଶ୍ଚ ଦ୍ରୁପଦଶ୍ଚ ମହାରଥଃ ।।୪।।",
+            odia:"ଏହି ସେନାରେ ଭୀମ ଓ ଅର୍ଜୁନ ସମାନ ପରାକ୍ରମୀ ମହାଧନୁର୍ଧର ବୀରମାନେ ଅଛନ୍ତି—ଯୁୟୁଧାନ, ବିରାଟ ଓ ମହାରଥୀ ଦ୍ରୁପଦ ।"},
+
+            {id:"1.5", snk:"ଧୃଷ୍ଟକେତୁଶ୍ଚେକିତାନଃ କାଶିରାଜଶ୍ଚ ବୀର୍ୟବାନ୍ ।<br>ପୁରୁଜିତ୍ କୁନ୍ତିଭୋଜଶ୍ଚ ଶୈବ୍ୟଶ୍ଚ ନରପୁଙ୍ଗବଃ ।।୫।।",
+            odia:"ଧୃଷ୍ଟକେତୁ, ଚେକିତାନ, ପରାକ୍ରମୀ କାଶିରାଜ, ପୁରୁଜିତ୍, କୁନ୍ତିଭୋଜ ଓ ଶୈବ୍ୟ ଭଳି ଶ୍ରେଷ୍ଠ ନରମାନେ ମଧ୍ୟ ଅଛନ୍ତି ।"},
+
+            {id:"1.6", snk:"ୟୁଧାମନ୍ୟୁଶ୍ଚ ବିକ୍ରାନ୍ତ ଉତ୍ତମୌଜାଶ୍ଚ ବୀର୍ୟବାନ୍ ।<br>ସୌଭଦ୍ରୋ ଦ୍ରୌପଦେୟାଶ୍ଚ ସର୍ୱ ଏବ ମହାରଥାଃ ।।୬।।",
+            odia:"ବିକ୍ରମୀ ଯୁଧାମନ୍ୟୁ, ପରାକ୍ରମୀ ଉତ୍ତମୌଜା, ସୁଭଦ୍ରାପୁତ୍ର ଅଭିମନ୍ୟୁ ଓ ଦ୍ରୌପଦୀଙ୍କ ପୁତ୍ରମାନେ—ସମସ୍ତେ ମହାରଥୀ ।"},
+
+            {id:"1.7", snk:"ଅସ୍ମାକଂ ତୁ ବିଶିଷ୍ଟା ଯେ ତାନ୍ନିବୋଧ ଦ୍ୱିଜୋତ୍ତମ ।<br>ନାୟକା ମମ ସୈନ୍ୟସ୍ୟ ସଞ୍ଜ୍ଞାର୍ଥଂ ତାନ୍ବ୍ରବୀମି ତେ ।।୭।।",
+            odia:"ହେ ଦ୍ୱିଜୋତ୍ତମ! ଆମ ସେନାରେ ଯେମାନେ ପ୍ରମୁଖ ନାୟକ, ସେମାନଙ୍କୁ ଆପଣ ଜାଣନ୍ତୁ; ମୁଁ ସେମାନଙ୍କ ନାମ କହୁଛି ।"},
+
+            {id:"1.8", snk:"ଭବାନ୍ ଭୀଷ୍ମଶ୍ଚ କର୍ଣ୍ଣଶ୍ଚ କୃପଶ୍ଚ ସମିତିଞ୍ଜୟଃ ।<br>ଅଶ୍ୱତ୍ଥାମା ବିକର୍ଣ୍ଣଶ୍ଚ ସୌମଦତ୍ତିସ୍ତଥୈବ ଚ ।।୮।।",
+            odia:"ଆପଣ, ଭୀଷ୍ମ, କର୍ଣ୍ଣ, ଯୁଦ୍ଧଜୟୀ କୃପାଚାର୍ଯ୍ୟ, ଅଶ୍ୱତ୍ଥାମା, ବିକର୍ଣ୍ଣ ଓ ସୌମଦତ୍ତି (ଭୂରିଶ୍ରବା) ଆଦି ।"},
+
+            {id:"1.9", snk:"ଅନ୍ୟେ ଚ ବହବଃ ଶୂରା ମଦର୍ଥେ ତ୍ୟକ୍ତଜୀବିତାଃ ।<br>ନାନାଶସ୍ତ୍ରପ୍ରହରଣାଃ ସର୍ୱେ ଯୁଦ୍ଧବିଶାରଦାଃ ।।୯।।",
+            odia:"ଏହାଛଡ଼ା ଅନେକ ବୀର ଯୋଧା ଅଛନ୍ତି, ଯେମାନେ ମୋ ପାଇଁ ପ୍ରାଣ ଦେବାକୁ ପ୍ରସ୍ତୁତ ଏବଂ ବିଭିନ୍ନ ଅସ୍ତ୍ରଶସ୍ତ୍ରରେ ପାରଦର୍ଶୀ ।"},
+
+            {id:"1.10", snk:"ଅପର୍ଯାପ୍ତଂ ତଦସ୍ମାକଂ ବଳଂ ଭୀଷ୍ମାଭିରକ୍ଷିତମ୍ ।<br>ପର୍ଯାପ୍ତଂ ତ୍ୱିଦମେତେଷାଂ ବଳଂ ଭୀମାଭିରକ୍ଷିତମ୍ ।।୧୦।।",
+            odia:"ଭୀଷ୍ମଙ୍କ ରକ୍ଷାରେ ଆମ ସେନା ଅପରିମିତ; କିନ୍ତୁ ଭୀମଙ୍କ ରକ୍ଷାରେ ପାଣ୍ଡବମାନଙ୍କ ସେନା ସୀମିତ ।"},
+
+            {id:"1.11", snk:"ଅୟନେଷୁ ଚ ସର୍ୱେଷୁ ଯଥାଭାଗମବସ୍ଥିତାଃ ।<br>ଭୀଷ୍ମମେୱାଭିରକ୍ଷନ୍ତୁ ଭବନ୍ତଃ ସର୍ୱ ଏୱ ହି ।।୧୧।।",
+            odia:"ସମସ୍ତେ ନିଜ ନିଜ ସ୍ଥାନରେ ରହି ଭୀଷ୍ମଙ୍କୁ ସୁରକ୍ଷା କରନ୍ତୁ ।"},
+
+            {id:"1.12", snk:"ତସ୍ୟ ସଞ୍ଜନୟନ୍ ହର୍ଷଂ କୁରୁବୃଦ୍ଧଃ ପିତାମହଃ ।<br>ସିଂହନାଦଂ ବିନଦ୍ୟୋଚ୍ଚୈଃ ଶଂଖଂ ଦଧ୍ମୌ ପ୍ରତାପବାନ୍ ।।୧୨।।",
+            odia:"କୁରୁବଂଶର ବୃଦ୍ଧ ପିତାମହ ଭୀଷ୍ମ ଦୁର୍ଯୋଧନଙ୍କୁ ଆନନ୍ଦିତ କରିବା ପାଇଁ ସିଂହନାଦ ସଦୃଶ ଉଚ୍ଚ ସ୍ୱରରେ ଶଂଖ ବାଜାଇଲେ ।"},
+
+            {id:"1.13", snk:"ତତଃ ଶଂଖାଶ୍ଚ ଭେର୍ୟଶ୍ଚ ପଣବାନକଗୋମୁଖାଃ ।<br>ସହସୈୱାଭ୍ୟହନ୍ୟନ୍ତ ସ ଶବ୍ଦସ୍ତୁମୁଲୋऽଭବତ୍ ।।୧୩।।",
+            odia:"ତାପରେ ଶଂଖ, ଢୋଲ, ମୃଦଙ୍ଗ ଓ ଅନ୍ୟାନ୍ୟ ବାଦ୍ୟଯନ୍ତ୍ର ଏକାଥରେ ବାଜି ଭୟଙ୍କର ଧ୍ୱନି ସୃଷ୍ଟି କଲା ।"},
+
+            {id:"1.14", snk:"ତତଃ ଶ୍ୱେତୈର୍ହୟୈର୍ୟୁକ୍ତେ ମହତି ସ୍ୟନ୍ଦନେ ସ୍ଥିତୌ ।<br>ମାଧବଃ ପାଣ୍ଡବଶ୍ଚୈବ ଦିବ୍ୟୌ ଶଂଖୌ ପ୍ରଦଧ୍ମତୁଃ ।।୧୪।।",
+            odia:"ତାପରେ ଧଳା ଘୋଡ଼ା ଯୁକ୍ତ ମହାରଥରେ ବସିଥିବା ମାଧବ (ଶ୍ରୀକୃଷ୍ଣ) ଓ ପାଣ୍ଡବ (ଅର୍ଜୁନ) ଦିବ୍ୟ ଶଂଖ ବାଜାଇଲେ ।"},
+
+            {id:"1.15", snk:"ପାଞ୍ଚଜନ୍ୟଂ ହୃଷୀକେଶୋ ଦେବଦତ୍ତଂ ଧନଞ୍ଜୟଃ ।<br>ପୌଣ୍ଡ୍ରଂ ଦଧ୍ମୌ ମହାଶଂଖଂ ଭୀମକର୍ମା ବୃକୋଦରଃ ।।୧୫।।",
+            odia:"ହୃଷୀକେଶ (ଶ୍ରୀକୃଷ୍ଣ) ପାଞ୍ଚଜନ୍ୟ ଶଂଖ ବାଜାଇଲେ; ଧନଞ୍ଜୟ (ଅର୍ଜୁନ) ଦେବଦତ୍ତ ଓ ଭୀମକର୍ମା ବୃକୋଦର (ଭୀମ) ପୌଣ୍ଡ୍ର ନାମକ ମହାଶଂଖ ବାଜାଇଲେ ।"},
+
+            {id:"1.16", snk:"ଅନନ୍ତବିଜୟଂ ରାଜା କୁନ୍ତୀପୁତ୍ରୋ ଯୁଧିଷ୍ଠିରଃ ।<br>ନକୁଳଃ ସହଦେବଶ୍ଚ ସୁଘୋଷମଣିପୁଷ୍ପକୌ ।।୧୬।।",
+            odia:"କୁନ୍ତୀପୁତ୍ର ରାଜା ଯୁଧିଷ୍ଠିର ଅନନ୍ତବିଜୟ ଶଂଖ ବାଜାଇଲେ; ନକୁଳ ଓ ସହଦେବ କ୍ରମେ ସୁଘୋଷ ଓ ମଣିପୁଷ୍ପକ ଶଂଖ ବାଜାଇଲେ ।"},
+
+            {id:"1.17", snk:"କାଶ୍ୟଶ୍ଚ ପରମେଷ୍ୱାସଃ ଶିଖଣ୍ଡୀ ଚ ମହାରଥଃ ।<br>ଧୃଷ୍ଟଦ୍ୟୁମ୍ନୋ ବିରାଟଶ୍ଚ ସାତ୍ୟକିଶ୍ଚାପରାଜିତଃ ।।୧୭।।",
+            odia:"ପରମ ଧନୁର୍ଧର କାଶୀରାଜ, ମହାରଥୀ ଶିଖଣ୍ଡୀ, ଧୃଷ୍ଟଦ୍ୟୁମ୍ନ, ବିରାଟ ଓ ଅପରାଜିତ ସାତ୍ୟକି ମଧ୍ୟ ଶଂଖ ବାଜାଇଲେ ।"},
+
+            {id:"1.18", snk:"ଦ୍ରୁପଦୋ ଦ୍ରୌପଦେୟାଶ୍ଚ ସର୍ୱଶଃ ପୃଥିବୀପତେ ।<br>ସୌଭଦ୍ରଶ୍ଚ ମହାବାହୁଃ ଶଂଖାନ୍ ଦଧ୍ମୁଃ ପୃଥକ୍ ପୃଥକ୍ ।।୧୮।।",
+            odia:"ହେ ରାଜନ! ଦ୍ରୁପଦ, ଦ୍ରୌପଦୀଙ୍କ ପୁତ୍ରମାନେ ଓ ମହାବାହୁ ସୁଭଦ୍ରାପୁତ୍ର ଅଭିମନ୍ୟୁ ପୃଥକ୍ ପୃଥକ୍ ଶଂଖ ବାଜାଇଲେ ।"},
+
+            {id:"1.19", snk:"ସ ଘୋଷୋ ଧାର୍ତରାଷ୍ଟ୍ରାଣାଂ ହୃଦୟାନି ବ୍ୟଦାରୟତ୍ ।<br>ନଭଶ୍ଚ ପୃଥିବୀଂ ଚୈବ ତୁମୁଲୋ ଅଭ୍ୟନୁନାଦୟନ୍ ।।୧୯।।",
+            odia:"ସେହି ଭୟଙ୍କର ଧ୍ୱନି ଧୃତରାଷ୍ଟ୍ରଙ୍କ ପୁତ୍ରମାନଙ୍କ ହୃଦୟକୁ କମ୍ପିତ କରିଦେଲା ଓ ଆକାଶ ଓ ପୃଥିବୀକୁ ମଧ୍ୟ ପ୍ରତିଧ୍ୱନିତ କଲା ।"},
+
+            {id:"1.20", snk:"ଅଥ ବ୍ୟବସ୍ଥିତାନ୍ ଦୃଷ୍ଟ୍ୱା ଧାର୍ତରାଷ୍ଟ୍ରାନ୍ କପିଧ୍ୱଜଃ ।<br>ପ୍ରବୃତ୍ତେ ଶସ୍ତ୍ରସମ୍ପାତେ ଧନୁରୁଦ୍ୟମ୍ୟ ପାଣ୍ଡବଃ ।।୨୦।।",
+            odia:"ତାପରେ କପିଧ୍ୱଜ ପାଣ୍ଡବ (ଅର୍ଜୁନ) ଧୃତରାଷ୍ଟ୍ରଙ୍କ ପୁତ୍ରମାନଙ୍କୁ ଯୁଦ୍ଧ ପାଇଁ ସଜ୍ଜ ଦେଖି ଧନୁଷ ଉଠାଇଲେ ।"},
+
+            {id:"1.21", snk:"ହୃଷୀକେଶଂ ତଦା ବାକ୍ୟମିଦମାହ ମହୀପତେ ।<br>ସେନୟୋରୁଭୟୋର୍ମଧ୍ୟେ ରଥଂ ସ୍ଥାପୟ ମେऽଚ୍ୟୁତ ।।୨୧।।",
+            odia:"ତାପରେ ସେ ହୃଷୀକେଶ (ଶ୍ରୀକୃଷ୍ଣ)ଙ୍କୁ କହିଲେ: ହେ ଅଚ୍ୟୁତ! ମୋର ରଥକୁ ଉଭୟ ସେନାର ମଧ୍ୟରେ ରଖନ୍ତୁ ।"},
+
+            {id:"1.22", snk:"ୟାବଦେତାନ୍ ନିରୀକ୍ଷେऽହଂ ଯୋଦ୍ଧୁକାମାନବସ୍ଥିତାନ୍ ।<br>କୈର୍ମୟା ସହ ଯୋଦ୍ଧବ୍ୟମସ୍ମିନ୍ ରଣସମୁଦ୍ୟମେ ।।୨୨।।",
+            odia:"ମୁଁ ଏହି ଯୁଦ୍ଧକୁ ଇଚ୍ଛା କରୁଥିବା ଯୋଧାମାନଙ୍କୁ ଦେଖିବି, କାହା ସହିତ ଏହି ଯୁଦ୍ଧରେ ମୋତେ ଯୁଦ୍ଧ କରିବାକୁ ପଡ଼ିବ ।"},
+            {id:"1.23", snk:"ଯୋତ୍ସ୍ୟମାନାନବେକ୍ଷେऽହଂ ଯ ଏତେऽତ୍ର ସମାଗତାଃ ।<br>ଧାର୍ତରାଷ୍ଟ୍ରସ୍ୟ ଦୁର୍ବୁଦ୍ଧେର୍ଯୁଦ୍ଧେ ପ୍ରିୟଚିକୀର୍ଷବଃ ।।୨୩।।",
+            odia:"ଏଠାରେ ଯେମାନେ ଧୃତରାଷ୍ଟ୍ରଙ୍କ ଦୁର୍ବୁଦ୍ଧି ପୁତ୍ରଙ୍କ ପ୍ରିୟ କାମନା ପୂରଣ ପାଇଁ ଯୁଦ୍ଧକୁ ଆସିଛନ୍ତି, ସେମାନଙ୍କୁ ମୁଁ ଦେଖିବାକୁ ଚାହେଁ ।"},
+
+            {id:"1.24", snk:"ସଞ୍ଜୟ ଉବାଚ<br>ଏବମୁକ୍ତୋ ହୃଷୀକେଶୋ ଗୁଡାକେଶେନ ଭାରତ ।<br>ସେନୟୋରୁଭୟୋର୍ମଧ୍ୟେ ସ୍ଥାପୟିତ୍ୱା ରଥୋତ୍ତମମ୍ ।।୨୪।।",
+            odia:"ସଞ୍ଜୟ କହିଲେ: ହେ ଭାରତ! ଗୁଡାକେଶ (ଅର୍ଜୁନ)ଙ୍କ ଏହି କଥାରେ ହୃଷୀକେଶ (ଶ୍ରୀକୃଷ୍ଣ) ଉଭୟ ସେନାର ମଧ୍ୟରେ ଉତ୍ତମ ରଥକୁ ରଖିଲେ ।"},
+
+            {id:"1.25", snk:"ଭୀଷ୍ମଦ୍ରୋଣପ୍ରମୁଖତଃ ସର୍ୱେଷାଂ ଚ ମହୀକ୍ଷିତାମ୍ ।<br>ଉବାଚ ପାର୍ଥ ପଶ୍ୟୈତାନ୍ ସମବେତାନ୍ କୁରୂନିତି ।।୨୫।।",
+            odia:"ଭୀଷ୍ମ, ଦ୍ରୋଣ ଓ ଅନ୍ୟାନ୍ୟ ରାଜମାନଙ୍କ ସମ୍ମୁଖରେ ରଥକୁ ରଖି, ଶ୍ରୀକୃଷ୍ଣ କହିଲେ: ହେ ପାର୍ଥ! ଏହି ସମବେତ କୁରୁମାନଙ୍କୁ ଦେଖ ।"},
+
+            {id:"1.26", snk:"ତତ୍ରାପଶ୍ୟତ୍ ସ୍ଥିତାନ୍ ପାର୍ଥଃ ପିତୄନଥ ପିତାମହାନ୍ ।<br>ଆଚାର୍ଯ୍ୟାନ୍ ମାତୁଲାନ୍ ଭ୍ରାତୄନ୍ ପୁତ୍ରାନ୍ ପୌତ୍ରାନ୍ ସଖୀଂସ୍ତଥା ।।୨୬।।",
+            odia:"ଅର୍ଜୁନ ସେଠାରେ ନିଜ ପିତା, ପିତାମହ, ଗୁରୁ, ମାମା, ଭାଇ, ପୁତ୍ର, ପୌତ୍ର ଓ ସଖାମାନଙ୍କୁ ଦେଖିଲେ ।"},
+
+            {id:"1.27", snk:"ଶ୍ୱଶୁରାନ୍ ସୁହୃଦଶ୍ଚୈବ ସେନୟୋରୁଭୟୋରପି ।<br>ତାନ୍ ସମୀକ୍ଷ୍ୟ ସ କୌନ୍ତେୟଃ ସର୍ୱାନ୍ ବନ୍ଧୂନବସ୍ଥିତାନ୍ ।।୨୭।।",
+            odia:"ଉଭୟ ସେନାରେ ନିଜ ଶ୍ୱଶୁର ଓ ସୁହୃଦମାନଙ୍କୁ ଦେଖି, କୌନ୍ତେୟ (ଅର୍ଜୁନ) ସମସ୍ତ ବନ୍ଧୁମାନଙ୍କୁ ସ୍ଥିତ ଦେଖିଲେ ।"},
+
+            {id:"1.28", snk:"କୃପୟା ପରୟାବିଷ୍ଟୋ ବିଷୀଦନ୍ନିଦମବ୍ରବୀତ୍ ।<br>ଦୃଷ୍ଟ୍ୱେମଂ ସ୍ୱଜନଂ କୃଷ୍ଣ ୟୁୟୁତ୍ସୁଂ ସମୁପସ୍ଥିତମ୍ ।।୨୮।।",
+            odia:"ଅତ୍ୟନ୍ତ କୃପାଭାବରେ ଆବେଗପୂର୍ଣ୍ଣ ହୋଇ ଅର୍ଜୁନ କହିଲେ: ହେ କୃଷ୍ଣ! ଏହି ସ୍ୱଜନମାନେ ଯୁଦ୍ଧ ପାଇଁ ସଜ୍ଜ ଦେଖି ମୋର ହୃଦୟ ବିଷାଦରେ ପୂର୍ଣ୍ଣ ।"},
+
+            {id:"1.29", snk:"ସୀଦନ୍ତି ମମ ଗାତ୍ରାଣି ମୁଖଂ ଚ ପରିଶୁଷ୍ୟତି ।<br>ବେପଥୁଶ୍ଚ ଶରୀରେ ମେ ରୋମହର୍ଷଶ୍ଚ ଜାୟତେ ।।୨୯।।",
+            odia:"ମୋର ଅଙ୍ଗପ୍ରତ୍ୟଙ୍ଗ କମ୍ପିତ ହେଉଛି, ମୁଖ ଶୁଖିଯାଉଛି, ଶରୀର କମ୍ପିତ ଓ ଲୋମହର୍ଷ ହେଉଛି ।"},
+
+            {id:"1.30", snk:"ଗାଣ୍ଡୀବଂ ସ୍ରଂସତେ ହସ୍ତାତ୍ ତ୍ୱକ୍ଚୈବ ପରିଦହ୍ୟତେ ।<br>ନ ଚ ଶକ୍ନୋମ୍ୟବସ୍ଥାତୁଂ ଭ୍ରମତୀୱ ଚ ମେ ମନଃ ।।୩୦।।",
+            odia:"ମୋର ହାତରୁ ଗାଣ୍ଡୀବ ଖସିଯାଉଛି, ଚର୍ମ ଜ୍ୱଳନ ହେଉଛି, ଠିଆ ରହିପାରୁନାହିଁ, ମନ ଭ୍ରମିତ ହେଉଛି ।"},
+
+            {id:"1.31", snk:"ନିମିତ୍ତାନି ଚ ପଶ୍ୟାମି ବିପରୀତାନି କେଶବ ।<br>ନ ଚ ଶ୍ରେଯୋऽନୁପଶ୍ୟାମି ହତ୍ୱା ସ୍ୱଜନମାହବେ ।।୩୧।।",
+            odia:"ହେ କେଶବ! ମୁଁ ଅଶୁଭ ଲକ୍ଷଣ ଦେଖୁଛି ଓ ସ୍ୱଜନଙ୍କୁ ହତ୍ୟା କରି କୌଣସି ମଙ୍ଗଳ ଦେଖୁନାହିଁ ।"},
+
+            {id:"1.32", snk:"ନ କାଙ୍କ୍ଷେ ବିଜୟଂ କୃଷ୍ଣ ନ ଚ ରାଜ୍ୟଂ ସୁଖାନି ଚ ।<br>କିଂ ନୋ ରାଜ୍ୟେନ ଗୋବିନ୍ଦ କିଂ ଭୋଗୈର୍ଜୀବିତେନ ବା ।।୩୨।।",
+            odia:"ହେ କୃଷ୍ଣ! ମୁଁ ବିଜୟ, ରାଜ୍ୟ କିମ୍ବା ସୁଖ କାମନା କରୁନାହିଁ। ହେ ଗୋବିନ୍ଦ! ରାଜ୍ୟ, ଭୋଗ କିମ୍ବା ଜୀବନର ଆମ ପାଇଁ କ’ଣ ମୂଲ୍ୟ?"},
+
+            {id:"1.33", snk:"ଯେଷାମର୍ଥେ କାଙ୍କ୍ଷିତଂ ନୋ ରାଜ୍ୟଂ ଭୋଗାଃ ସୁଖାନି ଚ ।<br>ତ ଇମେऽବସ୍ଥିତା ଯୁଦ୍ଧେ ପ୍ରାଣାଂସ୍ତ୍ୟକ୍ତ୍ୱା ଧନାନି ଚ ।।୩୩।।",
+            odia:"ଯେମାନଙ୍କ ପାଇଁ ଆମେ ରାଜ୍ୟ ଓ ସୁଖ କାମନା କରୁଥିଲୁ, ସେମାନେ ଏବେ ଯୁଦ୍ଧକ୍ଷେତ୍ରରେ ପ୍ରାଣ ଓ ଧନ ତ୍ୟାଗ କରିବାକୁ ପ୍ରସ୍ତୁତ ।"},
+
+            {id:"1.34", snk:"ଆଚାର୍ଯ୍ୟାଃ ପିତରଃ ପୁତ୍ରାସ୍ତଥୈବ ଚ ପିତାମହାଃ ।<br>ମାତୁଲାଃ ଶ୍ୱଶୁରାଃ ପୌତ୍ରାଃ ଶ୍ୟାଲାଃ ସମ୍ବନ୍ଧିନସ୍ତଥା ।।୩୪।।",
+            odia:"ଗୁରୁ, ପିତା, ପୁତ୍ର, ପିତାମହ, ମାମା, ଶ୍ୱଶୁର, ପୌତ୍ର, ଶ୍ୟାଳ ଓ ଅନ୍ୟାନ୍ୟ ସମ୍ବନ୍ଧୀମାନେ ଏଠାରେ ଉପସ୍ଥିତ ।"},
+
+            {id:"1.35", snk:"ଏତାନ୍ନ ହନ୍ତୁମିଚ୍ଛାମି ଘ୍ନତୋऽପି ମଧୁସୂଦନ ।<br>ଅପି ତ୍ରୈଲୋକ୍ୟରାଜ୍ୟସ୍ୟ ହେତୋଃ କିଂ ନୁ ମହୀକୃତେ ।।୩୫।।",
+            odia:"ହେ ମଧୁସୂଦନ! ଏମାନଙ୍କୁ ମୁଁ ହତ୍ୟା କରିବାକୁ ଚାହେଁନି, ସେମାନେ ମୋତେ ହତ୍ୟା କଲେ ମଧ୍ୟ। ତ୍ରିଲୋକର ରାଜ୍ୟ ପାଇଁ ମଧ୍ୟ ନୁହେଁ, ତେବେ ପୃଥିବୀ ପାଇଁ କାହିଁକି?"},
+
+            {id:"1.36", snk:"ନିହତ୍ୟ ଧାର୍ତରାଷ୍ଟ୍ରାନ୍ନଃ କା ପ୍ରୀତିଃ ସ୍ୟାଜ୍ଜନାର୍ଦନ ।<br>ପାପମେୱାଶ୍ରୟେଦସ୍ମାନ୍ ହତ୍ୱୈତାନାତତାୟିନଃ ।।୩୬।।",
+            odia:"ହେ ଜନାର୍ଦନ! ଧୃତରାଷ୍ଟ୍ରଙ୍କ ପୁତ୍ରମାନଙ୍କୁ ହତ୍ୟା କରି କୌଣସି ଆନନ୍ଦ ନାହିଁ; ସେମାନେ ଆତତାୟୀ ହେଲେ ମଧ୍ୟ ଆମେ ପାପରେ ପତିତ ହେବୁ ।"},
+
+            {id:"1.37", snk:"ତସ୍ମାନ୍ନାର୍ହା ବୟଂ ହନ୍ତୁଂ ଧାର୍ତରାଷ୍ଟ୍ରାନ୍ ସ୍ୱବାନ୍ଧବାନ୍ ।<br>ସ୍ୱଜନଂ ହି କଥଂ ହତ୍ୱା ସୁଖିନଃ ସ୍ୟାମ ମାଧବ ।।୩୭।।",
+            odia:"ଏହିକାରଣରୁ ଆମେ ନିଜ ବନ୍ଧୁ ଧୃତରାଷ୍ଟ୍ରପୁତ୍ରମାନଙ୍କୁ ହତ୍ୟା କରିବା ଯୋଗ୍ୟ ନୁହେଁ। ହେ ମାଧବ! ସ୍ୱଜନଙ୍କୁ ହତ୍ୟା କରି କିପରି ସୁଖୀ ହେବୁ?"},
+
+            {id:"1.38", snk:"ଯଦ୍ୟପ୍ୟେତେ ନ ପଶ୍ୟନ୍ତି ଲୋଭୋପହତଚେତସଃ ।<br>କୁଳକ୍ଷୟକୃତଂ ଦୋଷଂ ମିତ୍ରଦ୍ରୋହେ ଚ ପାତକମ୍ ।।୩୮।।",
+            odia:"ଲୋଭରେ ଅନ୍ଧ ହୋଇ ସେମାନେ କୁଳନାଶ ଓ ମିତ୍ରଦ୍ରୋହର ଦୋଷ ଦେଖୁନାହାନ୍ତି ।"},
+
+            {id:"1.39", snk:"କଥଂ ନ ଜ୍ଞେୟମସ୍ମାଭିଃ ପାପାଦସ୍ମାନ୍ନିବର୍ତ୍ତିତୁମ୍ ।<br>କୁଳକ୍ଷୟକୃତଂ ଦୋଷଂ ପ୍ରପଶ୍ୟଦ୍ଭିର୍ଜନାର୍ଦନ ।।୩୯।।",
+            odia:"ହେ ଜନାର୍ଦନ! ଆମେ ଏହି କୁଳନାଶର ଦୋଷକୁ ଦେଖୁଥିବା ସତ୍ତ୍ୱେ କାହିଁକି ପାପରୁ ଦୂରେଇବାକୁ ଚେଷ୍ଟା କରିବୁ ନାହିଁ?"},
+
+            {id:"1.40", snk:"କୁଳକ୍ଷୟେ ପ୍ରଣଶ୍ୟନ୍ତି କୁଳଧର୍ମାଃ ସନାତନାଃ ।<br>ଧର୍ମେ ନଷ୍ଟେ କୁଳଂ କୃତ୍ସ୍ନମଧର୍ମୋऽଭିଭବତ୍ୟୁତ ।।୪୦।।",
+            odia:"କୁଳନାଶରେ ସନାତନ କୁଳଧର୍ମ ନଷ୍ଟ ହୋଇଯାଏ; ଧର୍ମ ନଷ୍ଟ ହେଲେ ସମଗ୍ର କୁଳ ଅଧର୍ମରେ ପତିତ ହୁଏ ।"},
+
+            {id:"1.41", snk:"ଅଧର୍ମାଭିଭବାତ୍ କୃଷ୍ଣ ପ୍ରଦୁଷ୍ୟନ୍ତି କୁଳସ୍ତ୍ରିୟଃ ।<br>ସ୍ତ୍ରୀଷୁ ଦୁଷ୍ଟାସୁ ବାର୍ଷ୍ଣେୟ ଜାୟତେ ବର୍ଣ୍ଣସଙ୍କରଃ ।।୪୧।।",
+            odia:"ହେ କୃଷ୍ଣ! ଅଧର୍ମ ବଢ଼ିଲେ କୁଳର ନାରୀମାନେ ଦୁଷ୍ଟ ହୋଇଯାନ୍ତି; ତାହାରୁ ବର୍ଣ୍ଣସଙ୍କର ଉତ୍ପନ୍ନ ହୁଏ ।"},
+
+            {id:"1.42", snk:"ସଙ୍କରୋ ନରକାୟୈୱ କୁଳଘ୍ନାନାଂ କୁଳସ୍ୟ ଚ ।<br>ପତନ୍ତି ପିତରୋ ହ୍ୟେଷାଂ ଲୁପ୍ତପିଣ୍ଡୋଦକକ୍ରିୟାଃ ।।୪୨।।",
+            odia:"ବର୍ଣ୍ଣସଙ୍କର କୁଳନାଶକମାନଙ୍କୁ ନରକକୁ ନେଇଯାଏ; ପିଣ୍ଡୋଦକ କ୍ରିୟା ବନ୍ଦ ହେଲେ ପିତୃମାନେ ମଧ୍ୟ ପତିତ ହୁଅନ୍ତି ।"},
+
+            {id:"1.43", snk:"ଦୋଷୈରେତୈଃ କୁଳଘ୍ନାନାଂ ବର୍ଣ୍ଣସଙ୍କରକାରକୈଃ ।<br>ଉତ୍ସାଦ୍ୟନ୍ତେ ଜାତିଧର୍ମାଃ କୁଳଧର୍ମାଶ୍ଚ ଶାଶ୍ୱତାଃ ।।୪୩।।",
+            odia:"ଏହି ଦୋଷଦ୍ୱାରା କୁଳଧର୍ମ ଓ ଜାତିଧର୍ମ ନଷ୍ଟ ହୋଇଯାଏ ।"},
+
+            {id:"1.44", snk:"ଉତ୍ସନ୍ନକୁଳଧର୍ମାଣାଂ ମନୁଷ୍ୟାଣାଂ ଜନାର୍ଦନ ।<br>ନରକେऽନିୟତଂ ବାସୋ ଭବତୀତ୍ୟନୁଶୁଶ୍ରୁମ ।।୪୪।।",
+            odia:"ହେ ଜନାର୍ଦନ! କୁଳଧର୍ମ ନଷ୍ଟ ହେଲେ ଲୋକମାନେ ଦୀର୍ଘକାଳ ନରକରେ ବାସ କରନ୍ତି ବୋଲି ଆମେ ଶୁଣିଛୁ ।"},
+
+            {id:"1.45", snk:"ଅହୋ ବତ ମହତ୍ପାପଂ କର୍ତୁଂ ବ୍ୟବସିତା ବୟମ୍ ।<br>ଯଦ୍ରାଜ୍ୟସୁଖଲୋଭେନ ହନ୍ତୁଂ ସ୍ୱଜନମୁଦ୍ୟତାଃ ।।୪୫।।",
+            odia:"ହାୟ! ରାଜ୍ୟସୁଖର ଲୋଭରେ ଆମେ ମହାପାପ କରିବାକୁ ଉଦ୍ୟତ ହୋଇଛୁ—ନିଜ ସ୍ୱଜନଙ୍କୁ ହତ୍ୟା କରିବାକୁ ।"},
+
+            {id:"1.46", snk:"ଯଦି ମାମପ୍ରତୀକାରମଶସ୍ତ୍ରଂ ଶସ୍ତ୍ରପାଣୟଃ ।<br>ଧାର୍ତରାଷ୍ଟ୍ରା ରଣେ ହନ୍ୟୁସ୍ତନ୍ମେ କ୍ଷେମତରଂ ଭବେତ୍ ।।୪୬।।",
+            odia:"ଯଦି ଧୃତରାଷ୍ଟ୍ରଙ୍କ ପୁତ୍ରମାନେ ଶସ୍ତ୍ରଧାରୀ ହୋଇ ମୋତେ ନିରସ୍ତ୍ର ଅବସ୍ଥାରେ ହତ୍ୟା କରନ୍ତି, ତାହା ମୋ ପାଇଁ ଅଧିକ ଶ୍ରେୟସ୍କର ହେବ ।"},
+
+            {id:"1.47", snk:"ସଞ୍ଜୟ ଉବାଚ<br>ଏବମୁକ୍ତ୍ୱାର୍ଜୁନଃ ସଂଖ୍ୟେ ରଥୋପସ୍ଥ ଉପାବିଶତ୍ ।<br>ବିସୃଜ୍ୟ ସଶରଂ ଚାପଂ ଶୋକସଂବିଗ୍ନମାନସଃ ।।୪୭।।",
+            odia:"ସଞ୍ଜୟ କହିଲେ: ଏପରି କହି ଅର୍ଜୁନ ଯୁଦ୍ଧକ୍ଷେତ୍ରରେ ଧନୁଷ ଓ ବାଣ ତ୍ୟାଗ କରି ଶୋକାକୁଳ ମନେ ରଥରେ ବସି ରହିଲେ ।"}
+
+            // {id:"1.1", snk:"", odia:""},
+        ] },
+
+        { id: 2, title: "ସାଂଖ୍ୟ ଯୋଗ", count: 72, slokas: [] },
+        { id: 3, title: "କର୍ମ ଯୋଗ", count: 43, slokas: [] },
+        { id: 4, title: "ଜ୍ଞାନକର୍ମସନ୍ନ୍ୟାସ ଯୋଗ", count: 42, slokas: [] },
+        { id: 5, title: "କର୍ମସନ୍ନ୍ୟାସ ଯୋଗ", count: 29, slokas: [] },
+        { id: 6, title: "ଆତ୍ମସଂଯମ ଯୋଗ", count: 47, slokas: [] },
+        { id: 7, title: "ଜ୍ଞାନବିଜ୍ଞାନ ଯୋଗ", count: 30, slokas: [] },
+        { id: 8, title: "ଅକ୍ଷରବ୍ରହ୍ମ ଯୋଗ", count: 28, slokas: [] },
+        { id: 9, title: "ରାଜବିଦ୍ୟାରାଜଗୁହ୍ୟ ଯୋଗ", count: 34, slokas: [] },
+        { id: 10, title: "ବିଭୂତି ଯୋଗ", count: 42, slokas: [] },
+        { id: 11, title: "ବିଶ୍ୱରୂପଦର୍ଶନ ଯୋଗ", count: 55, slokas: [] },
+        { id: 12, title: "ଭକ୍ତି ଯୋଗ", count: 20, slokas: [] },
+        { id: 13, title: "କ୍ଷେତ୍ରକ୍ଷେତ୍ରଜ୍ଞବିଭାଗ ଯୋଗ", count: 35, slokas: [] },
+        { id: 14, title: "ଗୁଣତ୍ରୟବିଭାଗ ଯୋଗ", count: 27, slokas: [] },
+        { id: 15, title: "ପୁରୁଷୋତ୍ତମ ଯୋଗ", count: 20, slokas: [] },
+        { id: 16, title: "ଦୈବାସୁରସମ୍ପଦ୍ବିଭାଗ ଯୋଗ", count: 24, slokas: [] },
+        { id: 17, title: "ଶ୍ରଦ୍ଧାତ୍ରୟବିଭାଗ ଯୋଗ", count: 28, slokas: [] },
+        { id: 18, title: "ମୋକ୍ଷସନ୍ନ୍ୟାସ ଯୋଗ", count: 78, slokas: [] }
+    ];
+
+    let bookmarks = JSON.parse(localStorage.getItem('gita_bookmarks')) || [];
+    let isMuted = localStorage.getItem('isMuted') === 'true';
+
+    function init() {
+        renderChapters();
+        updateMuteUI();
+    }
+
+    function renderChapters() {
+        const list = document.getElementById('chapter-list');
+        list.innerHTML = '';
+        gitaData.forEach(ch => {
+            const div = document.createElement('div');
+            div.className = 'chapter-card';
+            div.innerHTML = `
+                <div class="chapter-info">
+                    <h3>ଅଧ୍ୟାୟ ${ch.id}</h3>
+                    <p>${ch.title}</p>
+                </div>
+                <div class="sloka-count-tag">${ch.count} ଶ୍ଳୋକ</div>
+            `;
+            div.onclick = () => openChapter(ch);
+            list.appendChild(div);
+        });
+    }
+
+    function openChapter(ch) {
+        if(ch.slokas.length === 0) { alert("ଶ୍ଳୋକ ତଥ୍ୟ ଶୀଘ୍ର ଆସୁଛି!"); return; }
+        switchTab('detail');
+        document.getElementById('header-title').innerText = ch.title;
+        document.getElementById('back-btn').style.display = 'block';
+        const list = document.getElementById('sloka-list');
+        list.innerHTML = '';
+        ch.slokas.forEach(s => list.appendChild(createSlokaElement(s, ch.title)));
+        window.scrollTo(0,0);
+    }
+
+    function createSlokaElement(s, chTitle) {
+        const isBookmarked = bookmarks.includes(s.id);
+        const div = document.createElement('div');
+        div.className = 'sloka-box';
+        div.innerHTML = `
+            <div class="action-icons">
+                <span class="icon-btn share-icon" onclick="shareWhatsApp('${s.id}', \`${s.snk}\`, \`${s.odia}\`, '${chTitle}')">📤</span>
+                <span class="icon-btn bookmark-icon ${isBookmarked ? 'active' : ''}" onclick="toggleBookmark('${s.id}', this)">❤</span>
+            </div>
+            <small>ଶ୍ଳୋକ ${s.id}</small>
+            <span class="sanskrit">${s.snk.replace(/\n/g, '<br>')}</span>
+            <span class="odia-meaning">${s.odia}</span>
+        `;
+        return div;
+    }
+
+    function shareWhatsApp(id, snk, odia, chTitle) {
+        const text = `*ଶ୍ରୀମଦ୍ଭଗବଦ୍‌ଗୀତା*\n_${chTitle}_\n\n*ଶ୍ଳୋକ ${id}*\n${snk}\n\n*ଅର୍ଥ:*\n${odia}\n\n🙏 ଜୟ ଶ୍ରୀକୃଷ୍ଣ`;
+        window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+    }
+
+    function toggleBookmark(id, el) {
+        if (bookmarks.includes(id)) {
+            bookmarks = bookmarks.filter(b => b !== id);
+            el.classList.remove('active');
+        } else {
+            bookmarks.push(id);
+            el.classList.add('active');
+        }
+        localStorage.setItem('gita_bookmarks', JSON.stringify(bookmarks));
+    }
+
+    function switchTab(tab) {
+        document.getElementById('home-view').classList.add('hidden');
+        document.getElementById('bookmark-view').classList.add('hidden');
+        document.getElementById('detail-view').classList.add('hidden');
+        document.getElementById('tab-home').classList.remove('active');
+        document.getElementById('tab-book').classList.remove('active');
+        document.getElementById('back-btn').style.display = 'none';
+
+        if(tab === 'home') {
+            document.getElementById('home-view').classList.remove('hidden');
+            document.getElementById('tab-home').classList.add('active');
+            document.getElementById('header-title').innerText = "ଶ୍ରୀମଦ୍ଭଗବଦ୍‌ଗୀତା";
+        } else if(tab === 'bookmark') {
+            document.getElementById('bookmark-view').classList.remove('hidden');
+            document.getElementById('tab-book').classList.add('active');
+            renderBookmarks();
+        } else {
+            document.getElementById('detail-view').classList.remove('hidden');
+        }
+    }
+
+    function renderBookmarks() {
+        const container = document.getElementById('bookmark-list');
+        container.innerHTML = '';
+        if (bookmarks.length === 0) {
+            container.innerHTML = '<p style="text-align:center; padding-top:40px; opacity:0.6;">କୌଣସି ପସନ୍ଦିତ ଶ୍ଳୋକ ମିଳିଲା ନାହିଁ ।</p>';
+            return;
+        }
+        bookmarks.forEach(bid => {
+            gitaData.forEach(ch => {
+                const found = ch.slokas.find(s => s.id === bid);
+                if(found) container.appendChild(createSlokaElement(found, ch.title));
+            });
+        });
+    }
+
+    function goHome() { switchTab('home'); }
+    function toggleMute() { isMuted = !isMuted; localStorage.setItem('isMuted', isMuted); updateMuteUI(); }
+    function updateMuteUI() { document.getElementById('mute-toggle').innerText = isMuted ? "🔇" : "🔊"; }
+
+    init();
+</script>
+</body>
+</html>
