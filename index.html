@@ -376,7 +376,7 @@
 <div id="install-modal" class="install-modal">
   <div class="install-box">
     <div style="width: 80px; height: 80px; background: white; border-radius: 20px; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border: 2px solid var(--secondary);">
-        <img src="icon.png" alt="App Icon" style="width: 60px; height: 60px; border-radius: 10px;">
+        <img src="icons/icon.png" alt="App Icon" style="width: 60px; height: 60px; border-radius: 10px;">
     </div>
     
     <h2>ଶ୍ରୀମଦ୍ଭଗବଦ୍‌ଗୀତା</h2>
@@ -705,7 +705,7 @@
 
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("/sw.js")
+        navigator.serviceWorker.register('./sw.js')
           .then(reg => console.log("✅ Service Worker Registered"))
           .catch(err => console.log("❌ SW Error:", err));
       });
