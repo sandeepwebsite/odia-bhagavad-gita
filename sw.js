@@ -1,4 +1,4 @@
-const CACHE_NAME = "gita-pwa-v4";
+const CACHE_NAME = "gita-pwa-v4.1";
 
 const FILES_TO_CACHE = [
   "./",
