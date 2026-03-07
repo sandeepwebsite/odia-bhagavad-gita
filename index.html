@@ -357,6 +357,14 @@
         <div class="stats-bar">ସମୁଦାୟ ଅଧ୍ୟାୟ: ୧୮ | ସମୁଦାୟ ଶ୍ଳୋକ: ୭୦୦</div>
         <div id="chapter-list"></div>
     </div>
+<div id="chalisa-view" class="hidden fade-in">
+    <div class="sloka-box" style="border-top: 8px solid #eb4d4b;">
+        <h2 style="text-align:center; color: #d35400; margin-top:0;">ଶ୍ରୀ ହନୁମାନ ଚାଳିଶା</h2>
+        <div class="sloka-divider"></div>
+        <div id="chalisa-content" class="odia-meaning" style="white-space: pre-line; text-align: center; font-weight: 500;">
+            </div>
+    </div>
+</div>
 
     <div id="bookmark-view" class="hidden">
         <h2 style="text-align:center; color: var(--primary);">ମୋର ପସନ୍ଦିତ</h2>
@@ -368,8 +376,11 @@
     </div>
 </div>
 
+
+
 <nav class="tab-bar">
     <div class="tab-item active" id="tab-home" onclick="switchTab('home')"><div>🏠</div><div>ଅଧ୍ୟାୟ</div></div>
+    <div class="tab-item" id="tab-chalisa" onclick="switchTab('chalisa')"><div>🚩</div><div>ଚାଳିଶା</div></div>
     <div class="tab-item" id="tab-book" onclick="switchTab('bookmark')"><div>🔖</div><div>ବୁକ୍‌ମାର୍କ</div></div>
 </nav>
 
@@ -666,26 +677,96 @@
         localStorage.setItem('gita_bookmarks', JSON.stringify(bookmarks));
     }
 
-    function switchTab(tab) {
-        document.getElementById('home-view').classList.add('hidden');
-        document.getElementById('bookmark-view').classList.add('hidden');
-        document.getElementById('detail-view').classList.add('hidden');
-        document.getElementById('tab-home').classList.remove('active');
-        document.getElementById('tab-book').classList.remove('active');
-        document.getElementById('back-btn').style.display = 'none';
+const hanumanChalisaOdia = `॥ ଦୋହା ॥
+ଶ୍ରୀଗୁରୁ ଚରଣ ସରୋଜ ରଜ, ନିଜ ମନୁ ମୁକୁରୁ ସୁଧାରି ।
+ବରଣଉଁ ରଘୁବର ବିମଳ ଯଶ, ଯୋ ଦାୟକୁ ଫଳ ଚାରି ॥
+ବୁଦ୍ଧିହୀନ ତନୁ ଜାନିକେ, ସୁମିରୌ ପବନ-କୁମାର ।
+ବଳ ବୁଦ୍ଧି ବିଦ୍ୟା ଦେହୁ ମୋହି, ହରହୁ କଳେଶ ବିକାର ॥
 
-        if(tab === 'home') {
-            document.getElementById('home-view').classList.remove('hidden');
-            document.getElementById('tab-home').classList.add('active');
-            document.getElementById('header-title').innerText = "ଶ୍ରୀମଦ୍ଭଗବଦ୍‌ଗୀତା";
-        } else if(tab === 'bookmark') {
-            document.getElementById('bookmark-view').classList.remove('hidden');
-            document.getElementById('tab-book').classList.add('active');
-            renderBookmarks();
-        } else {
-            document.getElementById('detail-view').classList.remove('hidden');
-        }
+॥ ଚୌପାଈ ॥
+ଜୟ ହନୁମାନ ଜ୍ଞାନ ଗୁଣ ସାଗର । ଜୟ କପୀଶ ତିହୁଁ ଲୋକ ଉଜାଗର ॥ ୧ ॥
+ରାମଦୂତ ଅତୁଳିତ ବଳ ଧାମା । ଅଞ୍ଜନି-ପୁତ୍ର ପବନସୁତ ନାମା ॥ ୨ ॥
+ମହାବୀର ବିକ୍ରମ ବଜରଙ୍ଗୀ । କୁମତି ନିବାର ସୁମତି କେ ସଙ୍ଗୀ ॥ ୩ ॥
+କାଞ୍ଚନ ବରଣ ବିରାଜ ସୁବେଶା । କାନନ କୁଣ୍ଡଳ କୁଞ୍ଚିତ କେଶା ॥ ୪ ॥
+
+ହାଥ ବଜ୍ର ଓ ଧ୍ୱଜା ବିରାଜୈ । କାନ୍ଧେ ମୂଞ୍ଜ ଜନେଉ ସାଜୈ ॥ ୫ ॥
+ଶଙ୍କର ସୁବନ କେଶରୀନନ୍ଦନ । ତେଜ ପ୍ରତାପ ମହା ଜଗ ବନ୍ଦନ ॥ ୬ ॥
+ବିଦ୍ୟାବାନ ଗୁଣୀ ଅତି ଚାତୁର । ରାମ କାଜ କରିବେ କୋ ଆତୁର ॥ ୭ ॥
+ପ୍ରଭୁ ଚରିତ୍ର ସୁନିବେ କୋ ରସିୟା । ରାମ ଲଖନ ସୀତା ମନ ବସିୟା ॥ ୮ ॥
+
+ସୂକ୍ଷ୍ମ ରୂପ ଧରି ସିୟହିଁ ଦିଖାବା । ବିକଟ ରୂପ ଧରି ଲଙ୍କ ଜଲାବା ॥ ୯ ॥
+ଭୀମ ରୂପ ଧରି ଅସୁର ସଂହାରେ । ରାମଚନ୍ଦ୍ର କେ କାଜ ସଂୱାରେ ॥ ୧୦ ॥
+ଲାୟ ସଞ୍ଜୀବନ ଲଖନ ଜିୟାୟେ । ଶ୍ରୀରଘୁବୀର ହରଷି ଉର ଲାୟେ ॥ ୧୧ ॥
+ରଘୁପତି କୀନ୍ହି ବହୁତ ବଡ଼ାଈ । ତୁମ ମମ ପ୍ରିୟ ଭରତହି ସମ ଭାଈ ॥ ୧୨ ॥
+
+ସହସ ବଦନ ତୁମ୍ହରୋ ଯଶ ଗାୱୈ । ଅସ କହି ଶ୍ରୀପତି କଣ୍ଠ ଲଗାୱୈ ॥ ୧୩ ॥
+ସନକାଦିକ ବ୍ରହ୍ମାଦି ମୁନୀଶା । ନାରଦ ଶାରଦ ସହିତ ଅହୀଶା ॥ ୧୪ ॥
+ୟମ କୁବେର ଦିଗପାଳ ଜହାଁ ତେ । କବି କୋବିଦ କହି ସକେ କହାଁ ତେ ॥ ୧୫ ॥
+ତୁମ ଉପକାର ସୁଗ୍ରୀୱହିଁ କୀନ୍ହା । ରାମ ମିଲାୟ ରାଜ ପଦ ଦୀନ୍ହା ॥ ୧୬ ॥
+
+ତୁମ୍ହରୋ ମନ୍ତ୍ର ବିଭୀଷଣ ମାନା । ଲଙ୍କେଶ୍ୱର ଭୟେ ସବ ଜଗ ଜାନା ॥ ୧୭ ॥
+ୟୁଗ ସହସ୍ର ଯୋଜନ ପର ଭାନୁ । ଲୀଲ୍ୟୋ ତାହି ମଧୁର ଫଳ ଜାନୁ ॥ ୧୮ ॥
+ପ୍ରଭୁ ମୁଦ୍ରିକା ମେଲି ମୁଖ ମାହିଁ । ଜଳଧି ଲାଁଘି ଗୟେ ଅଚରଜ ନାହିଁ ॥ ୧୯ ॥
+ଦୁର୍ଗମ କାଜ ଜଗତ କେ ଜେତେ । ସୁଗମ ଅନୁଗ୍ରହ ତୁମ୍ହରେ ତେତେ ॥ ୨୦ ॥
+
+ରାମ ଦୁଆରେ ତୁମ ରଖୱାରେ । ହୋତ ନ ଆଜ୍ଞା ବିନୁ ପୈସାରେ ॥ ୨୧ ॥
+ସବ ସୁଖ ଲହୈ ତୁମ୍ହରୀ ସରନା । ତୁମ ରକ୍ଷକ କାହୂ କୋ ଡରନା ॥ ୨୨ ॥
+ଆପନ ତେଜ ସମ୍ହାରୋ ଆପୈ । ତିନୋଁ ଲୋକ ହାଙ୍କ ତେ କାଁପୈ ॥ ୨୩ ॥
+ଭୂତ ପିଶାଚ ନିକଟ ନହିଁ ଆୱୈ । ମହାବୀର ଜବ ନାମ ସୁନାୱୈ ॥ ୨୪ ॥
+
+ନାସୈ ରୋଗ ହରୈ ସବ ପୀରା । ଜପତ ନିରନ୍ତର ହନୁମତ ବୀରା ॥ ୨୫ ॥
+ସଙ୍କଟ ସେ ହନୁମାନ ଛୁଡ଼ାୱୈ । ମନ କ୍ରମ ବଚନ ଧ୍ୟାନ ଯୋ ଲାୱୈ ॥ ୨୬ ॥
+ସବ ପର ରାମ ତପସ୍ୱୀ ରାଜା । ତିନ କେ କାଜ ସକଳ ତୁମ ସାଜା ॥ ୨୭ ॥
+ଓର ମନୋରଥ ଜୋ କୋଇ ଲାୱୈ । ସୋଇ ଅମିତ ଜୀବନ ଫଳ ପାୱୈ ॥ ୨୮ ॥
+
+ଚାରୋଁ ୟୁଗ ପରତାପ ତୁମ୍ହାରା । ହୈ ପରସିଦ୍ଧ ଜଗତ ଉଜିୟାରା ॥ ୨୯ ॥
+ସାଧୁ ସନ୍ଥ କେ ତୁମ ରଖୱାରେ । ଅସୁର ନିକନ୍ଦନ ରାମ ଦୁଲାରେ ॥ ୩୦ ॥
+ଅଷ୍ଟ ସିଦ୍ଧି ନୌ ନିଧି କେ ଦାତା । ଅସ ବର ଦୀନ୍ହ ଜାନକୀ ମାତା ॥ ୩୧ ॥
+ରାମ ରସାୟନ ତୁମ୍ହରେ ପାସା । ସଦା ରହୋ ରଘୁପତି କେ ଦାସା ॥ ୩୨ ॥
+
+ତୁମ୍ହରେ ଭଜନ ରାମ କୋ ପାୱୈ । ଜନ୍ମ ଜନ୍ମ କେ ଦୁଃଖ ବିସରାୱୈ ॥ ୩୩ ॥
+ଅନ୍ତ କାଳ ରଘୁବର ପୁର ଜାଈ । ଜହାଁ ଜନ୍ମ ହରି-ଭକ୍ତ କହାଈ ॥ ୩୪ ॥
+ଓର ଦେବତା ଚିତ୍ତ ନ ଧରଈ । ହନୁମତ ସେଇ ସର୍ବ ସୁଖ କରଈ ॥ ୩୫ ॥
+ସଙ୍କଟ କଟୈ ମିଟୈ ସବ ପୀରା । ଜୋ ସୁମିରୈ ହନୁମତ ବଳବୀରା ॥ ୩୬ ॥
+
+ଜୟ ଜୟ ଜୟ ହନୁମାନ ଗୋସାଈଁ । କୃପା କରହୁ ଗୁରୁଦେବ କୀ ନାଈଁ ॥ ୩୭ ॥
+ଯୋ ଶତ ବାର ପାଠ କର କୋଈ । ଛୁଟହି ବନ୍ଦି ମହା ସୁଖ ହୋଈ ॥ ୩୮ ॥
+ଜୋ ୟହ ପଢ଼ୈ ହନୁମାନ ଚାଳୀସା । ହୋୟ ସିଦ୍ଧି ସାଖୀ ଗୌରୀସା ॥ ୩୯ ॥
+ତୁଳସୀଦାସ ସଦା ହରି ଚେରା । କୀଜୈ ନାଥ ହୃଦୟ ମହଁ ଡେରା ॥ ୪୦ ॥
+
+॥ ଦୋହା ॥
+ପବନତନୟ ସଙ୍କଟ ହରଣ, ମଙ୍ଗଳ ମୂରତି ରୂପ ।
+ରାମ ଲଖନ ସୀତା ସହିତ, ହୃଦୟ ବସହୁ ସୁର ଭୂପ ॥`;
+
+function switchTab(tab) {
+    // Hide all views
+    const views = ['home-view', 'bookmark-view', 'detail-view', 'chalisa-view'];
+    views.forEach(v => document.getElementById(v).classList.add('hidden'));
+    
+    // Deactivate all tabs
+    const tabs = ['tab-home', 'tab-book', 'tab-chalisa'];
+    tabs.forEach(t => document.getElementById(t).classList.remove('active'));
+    
+    document.getElementById('back-btn').style.display = 'none';
+
+    if(tab === 'home') {
+        document.getElementById('home-view').classList.remove('hidden');
+        document.getElementById('tab-home').classList.add('active');
+        document.getElementById('header-title').innerText = "ଶ୍ରୀମଦ୍ଭଗବଦ୍‌ଗୀତା";
+    } else if(tab === 'chalisa') {
+        document.getElementById('chalisa-view').classList.remove('hidden');
+        document.getElementById('tab-chalisa').classList.add('active');
+        document.getElementById('header-title').innerText = "ଶ୍ରୀ ହନୁମାନ ଚାଳିଶା";
+        document.getElementById('chalisa-content').innerText = hanumanChalisaOdia;
+    } else if(tab === 'bookmark') {
+        document.getElementById('bookmark-view').classList.remove('hidden');
+        document.getElementById('tab-book').classList.add('active');
+        renderBookmarks();
+    } else {
+        document.getElementById('detail-view').classList.remove('hidden');
     }
+    window.scrollTo(0,0);
+}
 
     function renderBookmarks() {
         const container = document.getElementById('bookmark-list');
